@@ -23,7 +23,7 @@ export const Footer = () => {
             <div className="bg-gray-300 h-[1px] my-8"></div>
             <Title className=" font-normal text-gray-100">Санал гомдол илгээх</Title>
             <div className="flex items-center justify-between mt-5">
-              <input type="text" placeholder="Enter your email" className="w-full h-full p-3.5 py-[15px] text-sm border-none outline-none rounded-l-md" />
+              <input type="text" placeholder="" className="w-full h-full p-3.5 py-[15px] text-sm border-none outline-none rounded-l-md" />
               <PrimaryButton className="rounded-none py-3.5 px-8 text-sm hover:bg-indigo-800 rounded-r-md">Submit</PrimaryButton>
             </div>
             <p className="text-gray-300 text-sm mt-3">.</p>

@@ -58,7 +58,7 @@ const deleteCategory = asyncHandler(async (req, res) => {
   const { id } = req.params;
   try {
     await Category.findByIdAndDelete(id);
-    res.status(200).json({ message: "Category deleted" });
+    res.status(200).json({ message: "Ангилал устсан" });
   } catch (error) {
     res.json(error);
   }

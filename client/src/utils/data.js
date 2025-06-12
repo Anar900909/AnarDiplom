@@ -22,7 +22,7 @@ export const menulists = [
   {
     id: 5,
     path: "/services",
-    link: "Үйлчилгээнүүд",
+    link: "Данс цэнэглэх",
   },
   {
     id: 6,

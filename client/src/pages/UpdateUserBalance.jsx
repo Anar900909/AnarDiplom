@@ -19,7 +19,7 @@ const UpdateUserBalance = () => {
     dispatch(updateBalance({ userId: id, newBalance: Number(newBalance) }))
       .unwrap()
       .then(() => {
-        alert("Balance updated successfully!");
+        alert("Дансийг амжилттай өөрчиллөө!");
         setNewBalance("");
         dispatch(getSingleUser(id)); // Refresh user data
       })

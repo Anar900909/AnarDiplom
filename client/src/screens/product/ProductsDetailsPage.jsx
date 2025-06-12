@@ -95,7 +95,6 @@ useEffect(() => {
       productId: id 
     })).unwrap();
 
-    toast.success("Bid placed successfully!");
     dispatch(fetchBiddingHistory(id));
     
   } catch (error) {
@@ -135,7 +134,7 @@ useEffect(() => {
               <br />
               <Caption>Барааний эдлэл</Caption>
               <br />
-              <Caption>Баталгаажсан: {product?.isverify ? "Yes" : "No"}</Caption>
+              <Caption>Баталгаажсан: {product?.isverify ? "Тийм" : "Үгүй"}</Caption>
               <br />
               <Caption>Дуусах Хугацаа:</Caption>
               <br />
@@ -159,7 +158,7 @@ useEffect(() => {
               </div>
               <br />
               <Title className="flex items-center gap-2">
-                Дуусах:
+                Өдөр:
                 <Caption>
                   <DateFormatter date ={product?.createdAt}/>
                   </Caption>
@@ -168,7 +167,7 @@ useEffect(() => {
                 Цаг: <Caption>10:20AM (Ulaanbator)</Caption>
               </Title>
               <Title className="flex items-center gap-2 my-5">
-                Таний Данс:<Caption>₮{user?.balance?.toFixed(2)} </Caption>
+                Таны Данс:<Caption>₮{user?.balance?.toFixed(2)} </Caption>
               </Title>
               <Title className="flex items-center gap-2">
                 Эхлэх Үнэ:<Caption className="text-3xl">₮{product?.price} </Caption>
@@ -203,7 +202,7 @@ useEffect(() => {
                   }`}
                   disabled={isDisabled || isBidding}
                 >
-                  {isBidding ? "Processing..." : "Place Bid"}
+                  {isBidding ? "Уншиж байна..." : "Бооцоо тавих"}
                 </button>
               </form>
               </div>
@@ -220,9 +219,9 @@ useEffect(() => {
               <button className={`rounded-md px-10 py-4 text-black shadow-s3 ${activeTab === "reviews" ? "bg-green text-white" : "bg-white"}`} onClick={() => handleTabClick("reviews")}>
                 Үнэлгээ(2)
               </button>
-              <button className={`rounded-md px-10 py-4 text-black shadow-s3 ${activeTab === "moreProducts" ? "bg-green text-white" : "bg-white"}`} onClick={() => handleTabClick("moreProducts")}>
+              {/* <button className={`rounded-md px-10 py-4 text-black shadow-s3 ${activeTab === "moreProducts" ? "bg-green text-white" : "bg-white"}`} onClick={() => handleTabClick("moreProducts")}>
                 
-              </button>
+              </button> */}
             </div>
 
             <div className="tab-content mt-8">
@@ -268,11 +267,11 @@ useEffect(() => {
                       </div>
                       <div className="flex justify-between py-3 border-b">
                         <Title>Зарагдсан</Title>
-                        {product?.isSoldOut ? <Caption>Sold Out</Caption> : <Caption> On Stock</Caption>}
+                        {product?.isSoldOut ? <Caption>Зарагдсан</Caption> : <Caption> Зарагдаагүй</Caption>}
                       </div>
                       <div className="flex justify-between py-3 border-b">
                         <Title>Баталгаажсан</Title>
-                       {product?.isverify ? <Caption>Yes</Caption> : <Caption> No</Caption>}
+                       {product?.isverify ? <Caption>Тийм</Caption> : <Caption> Үгүй</Caption>}
                       </div>
                       <div className="flex justify-between py-3 border-b">
                         <Title>Оруулсан цаг:</Title>

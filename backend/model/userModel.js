@@ -5,23 +5,23 @@ const userSchema = mongoose.Schema(
   {
     name: {
       type: String,
-      require: [true, "Please add a name"],
+      require: [true, "Нэр оруулна уу!"],
     },
     email: {
       type: String,
-      require: [true, "Please add a email"],
+      require: [true, "email Нэр оруулна уу!"],
       unique: true,
       trim: true,
       match: [/^\s*[\w\-\+_]+(\.[\w\-\+_]+)*\@[\w\-\+_]+\.[\w\-\+_]+(\.[\w\-\+_]+)*\s*$/, "Please enter a valid email"],
     },
     password: {
       type: String,
-      require: [true, "Please add a password"],
-      minLength: [8, "Password must be up to 8 characters"],
+      require: [true, "password оруулна уу!"],
+      minLength: [8, "password 8 үсэг байх ёстой!"],
     },
     photo: {
       type: String,
-      require: [true, "Please add a photo"],
+      require: [true, "photo оруулна уу"],
       default: "https://cdn-icons-png.flaticon.com/128/236/236832.png",
     },
     role: {

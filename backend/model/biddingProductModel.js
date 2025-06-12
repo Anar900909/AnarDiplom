@@ -14,7 +14,7 @@ const BiddingProductSchema = mongoose.Schema(
     },
     price: {
       type: Number,
-      require: [true, "Please add a Price"],
+      require: [true, "Үнийн дүн байршуулна уу"],
     },
   },
   { timestamps: true }

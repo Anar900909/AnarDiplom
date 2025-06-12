@@ -37,8 +37,8 @@ export const ProductCard = ({ item }) => {
                 <RiAuctionFill size={40} className="text-green" />
               </div>
               <div>
-                <Caption className="text-green">Одоогийн бооцоо </Caption>
-                <Title>${item?.biddingPrice}.00</Title>
+                <Caption className="text-green">Одоогийн бооцоо: </Caption>
+                <Title>₮{item?.biddingPrice}</Title>
               </div>
             </div>
             <div className="w-[1px] h-10 bg-gray-300"> </div>
@@ -47,8 +47,8 @@ export const ProductCard = ({ item }) => {
                 <GiTakeMyMoney size={40} className="text-red-500" />
               </div>
               <div>
-                <Caption className="text-red-500">Худалдаж авах</Caption>
-                <Title>${item?.price}.00</Title>
+                <Caption className="text-red-500">Эхлэх үнэ:</Caption>
+                <Title>₮{item?.price}</Title>
               </div>
             </div>
           </div>

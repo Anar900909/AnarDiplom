@@ -6,7 +6,7 @@ export const TopSeller = () => {
     <>
       <section className="process py-12">
         <Container>
-          <Heading title="Шилдэг борлуулагчид" subtitle="Lorem ipsum dolor, sit amet consectetur adipisicing elit. Veniam laboriosam iusto pariatur alias error numquam blanditiis," />
+          <Heading title="" subtitle="" />
 
           <div className="content grid grid-cols-1 md:grid-cols-5 gap-5 mt-8">
             {/* {topSellerList.map((item, index) => (

@@ -51,12 +51,12 @@ const loginUser = asyncHandler(async (req, res) => {
 
   if (!email || !password) {
     res.status(400);
-    throw new Error("Please add Email and Password");
+    throw new Error("Email Пассворд 2 ийг бөглнө үү!");
   }
   const user = await User.findOne({ email });
   if (!user) {
     res.status(400);
-    throw new Error("User not found, Please signUp");
+    throw new Error("Хэрэглэгч олдонгүй бүртгүүлнүү");
   }
 
   const passwordIsCorrrect = await bcrypt.compare(password, user.password);
@@ -75,7 +75,7 @@ const loginUser = asyncHandler(async (req, res) => {
     res.status(201).json({ _id, name, email, photo, role, token });
   } else {
     res.status(400);
-    throw new Error("Invalid email or password");
+    throw new Error("Буруу Email эсвэл Password");
   }
 });
 
@@ -105,37 +105,32 @@ const logoutUser = asyncHandler(async (req, res) => {
     sameSite: "none",
     secure: true,
   });
-  return res.status(200).json({ message: "Successfully Logged Out" });
+  return res.status(200).json({ message: "Амжилттай гарсан" });
 });
 
 const loginAsSeller = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
-  // Check if email and password are provided
   if (!email || !password) {
     res.status(400);
-    throw new Error("Please provide both email and password");
+    throw new Error("Буруу Email эсвэл Password");
   }
 
-  // Find the user by email
   const user = await User.findOne({ email });
   if (!user) {
     res.status(400);
-    throw new Error("User not found, please sign up");
+    throw new Error("Буруу Email эсвэл Password");
   }
 
-  // Verify the password
   const passwordIsCorrect = await bcrypt.compare(password, user.password);
   if (!passwordIsCorrect) {
     res.status(400);
-    throw new Error("Invalid email or password");
+    throw new Error("Буруу Email эсвэл Password");
   }
 
-  // If password is correct, update the role to 'seller'
   user.role = "seller";
   await user.save();
 
-  // Generate a token and set cookie
   const token = generateToken(user._id);
   res.cookie("token", token, {
     path: "/",
@@ -145,7 +140,6 @@ const loginAsSeller = asyncHandler(async (req, res) => {
     secure: true,
   });
 
-  // Send the response with updated user info
   const { _id, name, email: userEmail, photo, role } = user;
   res.status(200).json({ _id, name, email: userEmail, photo, role, token });
 });
@@ -163,7 +157,6 @@ const getUserBalance = asyncHandler(async (req, res) => {
   });
 });
 
-// Only for admin users
 const getAllUser = asyncHandler(async (req, res) => {
   const userList = await User.find({});
 
@@ -189,7 +182,7 @@ const estimateIncome = asyncHandler(async (req, res) => {
 });
 const getSingleUser = async (req, res) => {
   const user = await User.findById(req.params.id).select("-password");
-  if (!user) return res.status(404).json({ message: "User not found" });
+  if (!user) return res.status(404).json({ message: "Хэрэглэгч олдсонгүй" });
   res.status(200).json(user);
 };
 const updateUserBalance = asyncHandler(async (req, res) => {
@@ -198,13 +191,13 @@ const updateUserBalance = asyncHandler(async (req, res) => {
 
   if (!id || typeof newBalance !== "number") {
     res.status(400);
-    throw new Error("Please provide a valid user ID and balance.");
+    throw new Error("Буруу.");
   }
 
   const user = await User.findById(id);
   if (!user) {
     res.status(404);
-    throw new Error("User not found");
+    throw new Error("Алдаа гарлаа");
   }
 
   user.balance = newBalance;

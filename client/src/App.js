@@ -25,12 +25,14 @@ import {
   ScrollToTop,
   PrivateRoute,
 } from "./router/index.js";
+import About from "./pages/About";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { getLogInStatus } from "./redux/features/authSlice.js";
 import axios from "axios";
+import Services from "./pages/Services.jsx";
 
 
 axios.defaults.withCredentials = true;
@@ -256,6 +258,24 @@ function App() {
               </PrivateRoute>
             }
           />
+             <Route
+            path="/services"
+            element={
+              <Layout>
+                <Services  />
+              </Layout>
+            }
+          />
+
+          <Route
+            path="/about"
+            element={
+              <Layout>
+                <About />
+              </Layout>
+            }
+          />
+       
           <Route
             path="/*"
             element={

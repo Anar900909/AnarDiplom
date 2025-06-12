@@ -9,67 +9,63 @@ const placeBid = asyncHandler(async (req, res) => {
   const { productId, price } = req.body;
   const userId = req.user.id;
 
-  // ✅ Validate bid amount
   if (!price || typeof price !== 'number' || price <= 0) {
-    return res.status(400).json({ message: "Invalid bid amount" });
+    return res.status(400).json({ message: "Үдэгдэл хүрэлцэхгүй байна" });
   }
 
-  // ✅ Get user
   const user = await User.findById(userId);
   if (!user) {
     res.status(404);
-    throw new Error("User not found");
+    throw new Error("Хэрэглэгч олдсонгүй");
   }
 
-  // ✅ Get and validate product
   const product = await Product.findById(productId);
   if (!product) {
     res.status(404);
-    throw new Error("Product not found");
+    throw new Error("Бараа олдсонгүй");
   }
 
   if (!product.isverify) {
     res.status(400);
-    throw new Error("Bidding is not verified for this product");
+    throw new Error("Тухайн бараанд бооцоо тавих боломжгүй!");
   }
 
   if (product.isSoldout) {
     res.status(400);
-    throw new Error("Bidding is closed for this product");
+    throw new Error("Тухайн бараанд бооцоо тавих боломжгүй!");
   }
 
-  // ✅ Check balance
   if (user.balance < price) {
     res.status(400);
-    throw new Error("Insufficient balance for this bid");
+    throw new Error("Үдэгдэл хүрэлцэхгүй байна!");
   }
 
-  // ✅ Find current highest bidder
   const currentHighestBid = await BiddingProduct.findOne({ product: productId })
     .sort({ price: -1 })
-    .populate("user"); // To access user info for refund
+    .populate("user"); 
 
   let refundMessage = null;
 
-  // ✅ Refund previous highest bidder (if not same as current user)
-  if (
-    currentHighestBid &&
-    currentHighestBid.user &&
-    currentHighestBid.user._id.toString() !== userId
-  ) {
-    const previousBidder = await User.findById(currentHighestBid.user._id);
-    previousBidder.balance += currentHighestBid.price;
-    await previousBidder.save();
+    if (
+      currentHighestBid &&
+      currentHighestBid.user &&
+      currentHighestBid.user._id.toString() !== userId
+    ) {
+      const previousBidder = await User.findById(currentHighestBid.user._id);
+      previousBidder.balance += currentHighestBid.price;
+      await previousBidder.save();
 
-    refundMessage = `User ${previousBidder.name} got outbid and refunded $${currentHighestBid.price}`;
-    // You may want to notify them via socket or frontend polling
-  }
+      refundMessage = `User ${previousBidder.name} got outbid and refunded $${currentHighestBid.price}`;
 
-  // ✅ Deduct current user's balance
+      const io = req.app.get("io");
+      io.to(previousBidder._id.toString()).emit("outbid", {
+        message: "Таны бооцооноос илүү бооцоо өөр оролцогч тависан тул таны мөнгийг буцаан олголоо.",
+      });
+    }
+
   user.balance -= price;
   await user.save();
 
-  // ✅ Save or update bid
   const existingUserBid = await BiddingProduct.findOne({ user: userId, product: productId });
 
   let newBid;
@@ -89,20 +85,20 @@ const placeBid = asyncHandler(async (req, res) => {
     biddingProduct: newBid,
     newBalance: user.balance,
     refundMessage,
-    message: "Your bid has been placed successfully.",
+    message: "Амжилттай.",
   });
 });
 
 const validateBid = asyncHandler(async (req, res) => {
   const { productId, price } = req.body;
   if (!price || typeof price !== 'number' || price <= 0) {
-  return res.status(400).json({ message: "Invalid bid amount" });
+  return res.status(400).json({ message: "Буруу бооцоо" });
 }
 
   const userId = req.user.id;
 
   if (!productId || !price) {
-    return res.status(400).json({ valid: false, message: "Missing required fields" });
+    return res.status(400).json({ valid: false, message: "Алдаа!" });
   }
 
   const [user, product] = await Promise.all([
@@ -110,27 +106,25 @@ const validateBid = asyncHandler(async (req, res) => {
     Product.findById(productId)
   ]);
 
-  if (!user) return res.status(404).json({ valid: false, message: "User not found" });
-  if (!product) return res.status(404).json({ valid: false, message: "Product not found" });
+  if (!user) return res.status(404).json({ valid: false, message: "Хэрэглэгч олдсонгүй" });
+  if (!product) return res.status(404).json({ valid: false, message: "Бараа олдсонгүй" });
 
-  // Check product status
   if (product.isSoldout) {
-    return res.status(400).json({ valid: false, message: "Bidding is closed for this product" });
+    return res.status(400).json({ valid: false, message: "Бараа олдсонгүй" });
   }
 
   if (!product.isverify) {
-    return res.status(400).json({ valid: false, message: "Product not verified for bidding" });
+    return res.status(400).json({ valid: false, message: "Тухайн бараанд бооцоо тавих боломжгүй" });
   }
 
   // Check balance
   if (user.balance < price) {
     return res.status(200).json({ 
       valid: false, 
-      message: `Insufficient balance: $${user.balance.toFixed(2)}` 
+      message: `Үлдэгдэл хүрэлцэхгүй байна!: $${user.balance.toFixed(2)}` 
     });
   }
 
-  // Check minimum bid
   const currentHighest = await BiddingProduct.findOne({ product: productId })
     .sort({ price: -1 })
     .limit(1);
@@ -149,16 +143,15 @@ const validateBid = asyncHandler(async (req, res) => {
 const getBiddingHistory = asyncHandler(async (req, res) => {
   const productId = req.params.productId;
 
-  // Validate product ID
   if (!mongoose.Types.ObjectId.isValid(productId)) {
     return res.status(400).json({ error: "Invalid product ID" });
   }
 
   try {
     const history = await BiddingProduct.find({ product: productId })
-      .sort({ createdAt: -1 }) // Newest first
-      .populate('user', 'name email') // Only include name and email
-      .lean(); // Convert to plain JS object
+      .sort({ createdAt: -1 }) 
+      .populate('user', 'name email') 
+      .lean(); 
     if (!history || history.length === 0) {
       return res.status(200).json([]);
     }
@@ -173,35 +166,25 @@ const sellProduct = asyncHandler(async (req, res) => {
   const { productId } = req.body;
   const userId = req.user.id;
 
-  // Find the product
+ 
   const product = await Product.findById(productId);
   if (!product) {
     res.status(404);
-    throw new Error("Product not found");
+    throw new Error("Тухайн бараанд бооцоо тавих боломжгүй");
   }
 
   if (!product.isverify) {
     res.status(400);
-    throw new Error("Bidding is not verified for these products.");
+    throw new Error("Тухайн бараанд бооцоо тавих боломжгүй.");
   }
 
-
-  //   /* const currentTime = new Date();
-  //   const tenMinutesAgo = new Date(currentTime - 2 * 60 * 1000); // 10 minutes ago
-
-  //     if (!product.isSoldout || product.updatedAt < tenMinutesAgo || product.createdAt < tenMinutesAgo) {
-  //     return res.status(400).json({ error: "Product cannot be sold at this time" });
-  //   } */
-
-  // Check if the user is authorized to sell the product
   if (product.user.toString() !== userId) {
-    return res.status(403).json({ error: "You do not have permission to sell this product" });
+    return res.status(403).json({ error: "Тухайн бараанд бооцоо тавих боломжгүй" });
   }
 
-  // Find the highest bid
   const highestBid = await BiddingProduct.findOne({ product: productId }).sort({ price: -1 }).populate("user");
   if (highestBid && highestBid.user._id.toString() !== userId) {
-  // Refund previous highest bidder
+  
   const prevHighestUser = await User.findById(highestBid.user._id);
   if (prevHighestUser) {
     prevHighestUser.balance += highestBid.price;
@@ -210,43 +193,37 @@ const sellProduct = asyncHandler(async (req, res) => {
 }
 
 
-  // Calculate commission and final price
   const commissionRate = product.commission;
   const commissionAmount = (commissionRate / 100) * highestBid.price;
   const finalPrice = highestBid.price - commissionAmount;
 
-  // Update product details
   product.isSoldout = true;
   product.soldTo = highestBid.user;
   product.soldPrice = finalPrice;
 
-  // Update admin's commission balance
   const admin = await User.findOne({ role: "admin" });
   if (admin) {
     admin.commissionBalance += commissionAmount;
     await admin.save();
   }
 
-  // Update seller's balance
   const seller = await User.findById(product.user);
   if (seller) {
-    seller.balance += finalPrice; // Add the remaining amount to the seller's balance
+    seller.balance += finalPrice; 
     await seller.save();
   } else {
-    return res.status(404).json({ error: "Seller not found" });
+    return res.status(404).json({ error: "" });
   }
 
-  // Save product
   await product.save();
 
-  // Send email notification to the highest bidder
   await sendEmail({
     email: highestBid.user.email,
-    subject: "Congratulations! You won the auction!",
-    text: `You have won the auction for "${product.title}" with a bid of $${highestBid.price}.`,
+    subject: "Баяр хүргэе!",
+    text: `Та "${product.title}" Бараанд $${highestBid.price} үнээр хожлоо`,
   });
 
-  res.status(200).json({ message: "Product has been successfully sold!" });
+  res.status(200).json({ message: "Бараа амжилттай зарагдсан!" });
 });
 
 module.exports = {

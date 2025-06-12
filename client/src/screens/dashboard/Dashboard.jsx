@@ -36,7 +36,7 @@ export const Dashboard = () => {
       <section>
         <div className="shadow-s1 p-8 rounded-lg  mb-12">
           <Title level={5} className=" font-normal">
-             <p>Таний Дансанд: ${user && user.balance ? user?.balance?.toFixed(2) : "0.00"} төг байна </p>
+             <p>Таны Дансанд: ${user && user.balance ? user?.balance?.toFixed(2) : "0.00"} төг байна </p>
 
           </Title>
           <hr className="my-5" />

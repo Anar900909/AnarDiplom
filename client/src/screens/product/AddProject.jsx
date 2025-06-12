@@ -88,33 +88,33 @@ export const AddProduct = () => {
         <div className="flex items-center gap-5 my-4">
           <div className="w-1/2">
             <Caption className="mb-2">Өндөр (cm)</Caption>
-            <input type="number" name="height" value={product?.height} onChange={handleInputChange} placeholder="Height" className={`${commonClassNameOfInput}`} />
+            <input type="number" name="height" value={product?.height} onChange={handleInputChange} placeholder="" className={`${commonClassNameOfInput}`} />
           </div>
           <div className="w-1/2">
             <Caption className="mb-2">Урт (cm)</Caption>
-            <input type="number" name="lengthpic" value={product?.lengthpic} onChange={handleInputChange} placeholder="Length" className={`${commonClassNameOfInput}`} />
+            <input type="number" name="lengthpic" value={product?.lengthpic} onChange={handleInputChange} placeholder="" className={`${commonClassNameOfInput}`} />
           </div>
         </div>
 
         <div className="flex items-center gap-5 my-4">
           <div className="w-1/2">
             <Caption className="mb-2">Өргөн (cm)</Caption>
-            <input type="number" name="width" value={product?.width} onChange={handleInputChange} placeholder="Width" className={`${commonClassNameOfInput}`} />
+            <input type="number" name="width" value={product?.width} onChange={handleInputChange} placeholder="" className={`${commonClassNameOfInput}`} />
           </div>
           <div className="w-1/2">
             <Caption className="mb-2">Матириал <span className="text-purple-400 italic">(Модон, Төмөрөн, Чулуу гэх мэт...)</span></Caption>
-            <input type="text" name="mediumused" value={product?.mediumused} onChange={handleInputChange} placeholder="Medium used" className={`${commonClassNameOfInput}`} />
+            <input type="text" name="mediumused" value={product?.mediumused} onChange={handleInputChange} placeholder="" className={`${commonClassNameOfInput}`} />
           </div>
         </div>
 
         <div className="flex items-center gap-5 mt-4">
           <div className="w-1/2">
             <Caption className="mb-2">Жин (kg))</Caption>
-            <input type="number" name="weigth" value={product?.weigth} onChange={handleInputChange} placeholder="Weight" className={`${commonClassNameOfInput}`} />
+            <input type="number" name="weigth" value={product?.weigth} onChange={handleInputChange} placeholder="" className={`${commonClassNameOfInput}`} />
           </div>
           <div className="w-1/2">
             <Caption className="mb-2">Үнэ*</Caption>
-            <input type="number" name="price" value={product?.price} onChange={handleInputChange} placeholder="Price" className={`${commonClassNameOfInput}`} required />
+            <input type="number" name="price" value={product?.price} onChange={handleInputChange} placeholder="" className={`${commonClassNameOfInput}`} required />
           </div>
         </div>
 </>)}

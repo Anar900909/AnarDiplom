@@ -82,7 +82,7 @@ const getAllProducts = asyncHandler(async (req, res) => {
       return {
         ...product._doc,
         biddingPrice,
-        totalBids, // Adding the total number of bids
+        totalBids, 
       };
     })
   );
@@ -101,7 +101,7 @@ const getAllProductsofUser = asyncHandler(async (req, res) => {
       const biddingPrice = latestBid ? latestBid.price : product.price;
       return {
         ...product._doc,
-        biddingPrice, // Adding the price field
+        biddingPrice, 
       };
     })
   );
@@ -120,7 +120,7 @@ const getWonProducts = asyncHandler(async (req, res) => {
       const biddingPrice = latestBid ? latestBid.price : product.price;
       return {
         ...product._doc,
-        biddingPrice, // Adding the price field
+        biddingPrice, 
       };
     })
   );
@@ -245,7 +245,6 @@ const updateProduct = asyncHandler(async (req, res) => {
   });
 });
 
-// for admin only users
 const verifyAndAddCommissionProductByAmdin = asyncHandler(async (req, res) => {
   const { commission } = req.body;
   const { id } = req.params;
@@ -253,7 +252,7 @@ const verifyAndAddCommissionProductByAmdin = asyncHandler(async (req, res) => {
   const product = await Product.findById(id);
   if (!product) {
     res.status(404);
-    throw new Error("Product not found");
+    throw new Error("Бараа олсдонгүй");
   }
 
   product.isverify = true;
@@ -261,7 +260,7 @@ const verifyAndAddCommissionProductByAmdin = asyncHandler(async (req, res) => {
 
   await product.save();
 
-  res.status(200).json({ message: "Product verified successfully", data: product });
+  res.status(200).json({ message: "Бараа олсдонгүй", data: product });
 });
 
 const getAllProductsByAmdin = asyncHandler(async (req, res) => {
@@ -273,7 +272,7 @@ const getAllProductsByAmdin = asyncHandler(async (req, res) => {
       const biddingPrice = latestBid ? latestBid.price : product.price;
       return {
         ...product._doc,
-        biddingPrice, // Adding the price field
+        biddingPrice, 
       };
     })
   );
@@ -281,7 +280,6 @@ const getAllProductsByAmdin = asyncHandler(async (req, res) => {
   res.status(200).json(productsWithPrices);
 });
 
-// dot not it
 const deleteProductsByAmdin = asyncHandler(async (req, res) => {
   try {
     const { productIds } = req.body;
